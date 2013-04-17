@@ -47,7 +47,7 @@ public:
      void wait_and_pop( T& value )
      {
           boost::unique_lock<boost::mutex> lk( mut );
-          data_cond.wait( lk, !boost::bind( &threadsafe_queue<T>::internalEmpty, this ) );
+          data_cond.wait( lk, !boost::bind( &std::queue<T>::empty, boost::ref( data_queue ) );
           value = data_queue.front();
           data_queue.pop();
      }
@@ -55,7 +55,7 @@ public:
      boost::shared_ptr<T> wait_and_pop()
      {
           boost::unique_lock<boost::mutex> lk( mut );
-          data_cond.wait( lk, !boost::bind( &threadsafe_queue<T>::internalEmpty, this ) );
+          data_cond.wait( lk, !boost::bind( &std::queue<T>::empty, boost::ref( data_queue ) ) );
           boost::shared_ptr<T> res( boost::make_shared<T>( data_queue.front() ) );
           data_queue.pop();
           return res;
@@ -88,12 +88,6 @@ public:
      bool empty() const
      {
           boost::lock_guard<boost::mutex> lk( mut );
-          return data_queue.empty();
-     }
-private:
-
-     bool internalEmpty() const
-     {
           return data_queue.empty();
      }
 };
