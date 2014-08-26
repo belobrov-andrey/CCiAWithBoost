@@ -12,13 +12,11 @@
 
 #include "threadsafe_queue.h"
 
-#include <platform_pack/pkdef.h>
 #include <boost/thread.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/thread/future.hpp>
 #include <boost/utility/result_of.hpp>
-#include <platform_pack/pkend.h>
 
 class thread_pool
 {
