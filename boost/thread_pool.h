@@ -20,11 +20,9 @@
 
 class thread_pool
 {
-public:
-     thread_pool()
+ublic:
+     thread_pool( int thread_count = boost::thread::hardware_concurrency() )
      {
-          unsigned const thread_count = boost::thread::hardware_concurrency();
-
           for( unsigned i = 0; i < thread_count; ++i )
           {
                woringThreadGroup_.create_thread( boost::bind( &thread_pool::worker_thread, this ) );
