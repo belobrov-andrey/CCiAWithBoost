@@ -11,31 +11,34 @@
 #define THREAD_SAFE_QUEUE_H
 
 #include <queue>
-#include <string>
-#include <iostream>
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/locks.hpp>
 #include <boost/thread/condition_variable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/bind.hpp>
 
 template<typename T>
 class threadsafe_queue
 {
-private:
-     mutable boost::mutex mut;
-     std::queue<T> data_queue;
-     boost::condition_variable data_cond;
 public:
      threadsafe_queue()
      {
      }
-     threadsafe_queue( threadsafe_queue const& other )
+
+     threadsafe_queue( const threadsafe_queue& other )
      {
           boost::lock_guard<boost::mutex> lk( other.mut );
           data_queue = other.data_queue;
      }
+
+private:
+     threadsafe_queue& operator=( const threadsafe_queue &); // Disable copy assignment
+
+public:
+
+     typedef T value_type;
 
      void push( T new_value )
      {
@@ -90,6 +93,10 @@ public:
           boost::lock_guard<boost::mutex> lk( mut );
           return data_queue.empty();
      }
+private:
+     mutable boost::mutex mut;
+     std::queue<T> data_queue;
+     boost::condition_variable data_cond;
 };
 
 #endif // ifndef THREAD_SAFE_QUEUE_H
