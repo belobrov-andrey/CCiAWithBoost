@@ -17,8 +17,9 @@
 #include <boost/function.hpp>
 #include <boost/thread/future.hpp>
 #include <boost/utility/result_of.hpp>
+#include <boost/noncopyable.hpp>
 
-class thread_pool
+class thread_pool: private boost::noncopyable
 {
 ublic:
      thread_pool( int thread_count = boost::thread::hardware_concurrency() )
@@ -43,10 +44,11 @@ ublic:
           typedef boost::packaged_task <result > packaged_task;
           typedef boost::shared_ptr< boost::packaged_task< result > > packaged_task_ptr;
 
-          packaged_task_ptr taskPtr( new packaged_task( f ) ); // packaged_task is move only, using shared_ptr 
+          // packaged_task is move only, using shared_ptr 
+          packaged_task_ptr taskPtr( new packaged_task( f ) ); 
           boost::unique_future< result > res( taskPtr->get_future() );
 
-          // Thanks Pavel Shevaev ( http://efiquest.org ) for this tecnique of storing packaged_tasks
+          // Thanks Pavel Shevaev ( http://efiquest.org ) for this technique of storing packaged_tasks
           work_queue.push( boost::bind( &boost::packaged_task< result >::operator(), taskPtr ) );
 
           return boost::move( res );
