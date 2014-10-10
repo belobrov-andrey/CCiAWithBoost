@@ -21,7 +21,7 @@
 
 class thread_pool: private boost::noncopyable
 {
-ublic:
+public:
      thread_pool( int thread_count = boost::thread::hardware_concurrency() )
      {
           for( unsigned i = 0; i < thread_count; ++i )
